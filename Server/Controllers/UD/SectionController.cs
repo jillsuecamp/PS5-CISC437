@@ -28,9 +28,32 @@ namespace OCTOBER.Server.Controllers.UD
         {
         }
 
-        public Task<IActionResult> Delete(int KeyVal)
+
+        [HttpDelete]
+        [Route("Delete/{SectionId}")]
+        public async Task<IActionResult> Delete(int SectionId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _context.Database.BeginTransactionAsync();
+
+                var itm = await _context.Sections.Where(x => x.SectionId == SectionId).FirstOrDefaultAsync();
+
+                if (itm != null)
+                {
+                    _context.Sections.Remove(itm);
+                }
+                await _context.SaveChangesAsync();
+                await _context.Database.CommitTransactionAsync();
+
+                return Ok();
+            }
+            catch (Exception Dex)
+            {
+                await _context.Database.RollbackTransactionAsync();
+                //List<OraError> DBErrors = ErrorHandling.TryDecodeDbUpdateException(Dex, _OraTranslateMsgs);
+                return StatusCode(StatusCodes.Status417ExpectationFailed, "An Error has occurred");
+            }
         }
 
         [HttpGet]
@@ -68,13 +91,15 @@ namespace OCTOBER.Server.Controllers.UD
             }
         }
 
-        public async Task<IActionResult> Get(int KeyVal)
+        [HttpGet]
+        [Route("Get/{SchoolID}")]
+        public async Task<IActionResult> Get(int SchoolId)
         {
             try
             {
                 await _context.Database.BeginTransactionAsync();
 
-                SectionDTO? result = await _context.Sections.Where(x =>x.SchoolId == KeyVal).Where(x=>x.SectionId == KeyVal).Select(sp => new SectionDTO
+                SectionDTO? result = await _context.Sections.Where(x =>x.SchoolId == SchoolId).Where(x=>x.SectionId == SchoolId).Select(sp => new SectionDTO
                 {
                     Capacity = sp.Capacity,
                     CourseNo = sp.CourseNo,
