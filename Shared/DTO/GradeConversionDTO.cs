@@ -6,26 +6,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OCTOBER.Shared.DTO
 {
-	public class GradeDTO
+	public class GradeConversion
 	{
         [Key]
         [Precision(8)]
         public int SchoolId { get; set; }
         [Key]
-        [Precision(8)]
-        public int StudentId { get; set; }
-        [Key]
-        [Precision(8)]
-        public int SectionId { get; set; }
-        [Key]
         [StringLength(2)]
         [Unicode(false)]
-        public string GradeTypeCode { get; set; } = null!;
-        [Key]
+        public string LetterGrade { get; set; } = null!;
+        public decimal GradePoint { get; set; }
         [Precision(3)]
-        public byte GradeCodeOccurrence { get; set; }
-        public decimal NumericGrade { get; set; }
-        public string? Comments { get; set; }
+        public byte MaxGrade { get; set; }
+        [Precision(3)]
+        public byte MinGrade { get; set; }
         [StringLength(30)]
         [Unicode(false)]
         public string CreatedBy { get; set; } = null!;

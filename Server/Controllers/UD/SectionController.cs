@@ -19,9 +19,9 @@ using System.Linq;
 
 namespace OCTOBER.Server.Controllers.UD
 {
-	public class SectionController : BaseController, GenericRestController<CourseDTO>
+	public class StudentController : BaseController, GenericRestController<CourseDTO>
     {
-        public SectionController(OCTOBEROracleContext context,
+        public StudentController(OCTOBEROracleContext context,
             IHttpContextAccessor httpContextAccessor,
             IMemoryCache memoryCache)
         : base(context, httpContextAccessor)
@@ -30,18 +30,18 @@ namespace OCTOBER.Server.Controllers.UD
 
 
         [HttpDelete]
-        [Route("Delete/{SectionId}")]
-        public async Task<IActionResult> Delete(int SectionId)
+        [Route("Delete/{StudentId}")]
+        public async Task<IActionResult> Delete(int StudentId)
         {
             try
             {
                 await _context.Database.BeginTransactionAsync();
 
-                var itm = await _context.Sections.Where(x => x.SectionId == SectionId).FirstOrDefaultAsync();
+                var itm = await _context.Students.Where(x => x.StudentId == StudentId).FirstOrDefaultAsync();
 
                 if (itm != null)
                 {
-                    _context.Sections.Remove(itm);
+                    _context.Students.Remove(itm);
                 }
                 await _context.SaveChangesAsync();
                 await _context.Database.CommitTransactionAsync();
@@ -64,7 +64,7 @@ namespace OCTOBER.Server.Controllers.UD
             {
                 await _context.Database.BeginTransactionAsync();
 
-                var result = await _context.Sections.Select(sp => new SectionDTO
+                var result = await _context.Students.Select(sp => new StudentDTO
                 {
                     Capacity = sp.Capacity,
                     CourseNo = sp.CourseNo,
@@ -75,8 +75,8 @@ namespace OCTOBER.Server.Controllers.UD
                     ModifiedBy = sp.ModifiedBy,
                     ModifiedDate = sp.ModifiedDate,
                     SchoolId = sp.SchoolId,
-                    SectionId = sp.SectionId,
-                    SectionNo = sp.SectionNo,
+                    StudentId = sp.StudentId,
+                    StudentNo = sp.StudentNo,
                     StartDateTime = sp.StartDateTime
                 })
                 .ToListAsync();
@@ -99,7 +99,7 @@ namespace OCTOBER.Server.Controllers.UD
             {
                 await _context.Database.BeginTransactionAsync();
 
-                SectionDTO? result = await _context.Sections.Where(x =>x.SchoolId == SchoolId).Where(x=>x.SectionId == SchoolId).Select(sp => new SectionDTO
+                StudentDTO? result = await _context.Students.Where(x =>x.SchoolId == SchoolId).Where(x=>x.StudentId == SchoolId).Select(sp => new StudentDTO
                 {
                     Capacity = sp.Capacity,
                     CourseNo = sp.CourseNo,
@@ -110,8 +110,8 @@ namespace OCTOBER.Server.Controllers.UD
                     ModifiedBy = sp.ModifiedBy,
                     ModifiedDate = sp.ModifiedDate,
                     SchoolId = sp.SchoolId,
-                    SectionId = sp.SectionId,
-                    SectionNo = sp.SectionNo,
+                    StudentId = sp.StudentId,
+                    StudentNo = sp.StudentNo,
                     StartDateTime = sp.StartDateTime
                 })
                 .SingleAsync();
@@ -128,28 +128,28 @@ namespace OCTOBER.Server.Controllers.UD
 
         [HttpPost]
         [Route("Post")]
-        public async Task<IActionResult> Post([FromBody] SectionDTO _SectionDTO)
+        public async Task<IActionResult> Post([FromBody] StudentDTO _StudentDTO)
         {
             try
             {
                 await _context.Database.BeginTransactionAsync();
 
-                var itm = await _context.Sections.Where(x => x.SectionId == _SectionDTO.SectionId).FirstOrDefaultAsync();
+                var itm = await _context.Students.Where(x => x.StudentId == _StudentDTO.StudentId).FirstOrDefaultAsync();
 
                 if (itm == null)
                 {
-                    Section s = new Section
+                    Student s = new Student
                     {
-                        SectionId = _SectionDTO.SectionId,
-                        CourseNo = _SectionDTO.CourseNo,
-                        SectionNo = _SectionDTO.SectionNo,
-                        StartDateTime = _SectionDTO.StartDateTime,
-                        Location = _SectionDTO.Location,
-                        InstructorId = _SectionDTO.InstructorId,
-                        Capacity = _SectionDTO.Capacity,
-                        SchoolId = _SectionDTO.SchoolId
+                        StudentId = _StudentDTO.StudentId,
+                        CourseNo = _StudentDTO.CourseNo,
+                        StudentNo = _StudentDTO.StudentNo,
+                        StartDateTime = _StudentDTO.StartDateTime,
+                        Location = _StudentDTO.Location,
+                        InstructorId = _StudentDTO.InstructorId,
+                        Capacity = _StudentDTO.Capacity,
+                        SchoolId = _StudentDTO.SchoolId
                     };
-                    _context.Sections.Add(s);
+                    _context.Students.Add(s);
                     await _context.SaveChangesAsync();
                     await _context.Database.CommitTransactionAsync();
                 }
@@ -167,18 +167,18 @@ namespace OCTOBER.Server.Controllers.UD
 
         [HttpPut]
         [Route("Put")]
-        public async Task<IActionResult> Put([FromBody] SectionDTO _SectionDTO)
+        public async Task<IActionResult> Put([FromBody] StudentDTO _StudentDTO)
         {
             try
             {
                 await _context.Database.BeginTransactionAsync();
 
-                var itm = await _context.Sections.Where(x => x.CourseNo == _SectionDTO.CourseNo).FirstOrDefaultAsync();
+                var itm = await _context.Students.Where(x => x.CourseNo == _StudentDTO.CourseNo).FirstOrDefaultAsync();
 
-                itm.Capacity = _SectionDTO.Capacity;
-                itm.Location = _SectionDTO.Location;
+                itm.Capacity = _StudentDTO.Capacity;
+                itm.Location = _StudentDTO.Location;
 
-                _context.Sections.Update(itm);
+                _context.Students.Update(itm);
                 await _context.SaveChangesAsync();
                 await _context.Database.CommitTransactionAsync();
 
